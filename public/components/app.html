@@ -42,7 +42,7 @@
     margin-top: 40%;
   }
 
-  .audit-form paper-input {
+  .audit-form #auditUrl {
     width: 100%;
   }
 
@@ -182,9 +182,6 @@
 <core-animated-pages transitions="cross-fade-all" id="pages">
 
   <!-- Default view - Allow the user to enter an input URL -->
-  <!--
-  TODOs: Replace paper-input with a decorated paper-input field containing URL validation on the client-side.
-  -->
   <section id="audit-input">
     <form is="ajax-form" on-submitting="{{submitting}}" on-submitted="{{submitted}}" method="POST" action="/api"
           id="searchForm">
@@ -193,8 +190,11 @@
           <img width="300px" src="../img/logo.png" class="audit-logo" alt="A11y Accessibility Audits">
         </div>
         <div flex class="audit-form" layout horizontal center center-justified style="width:70%">
-          <paper-input value="{{auditInputUrl}}" name="url" tabindex="1" label="Enter URL to test for accessibility..."
-                       id="auditUrl"></paper-input>
+          <paper-input-decorator floatingLabel error="A valid URL is required!" autoValidate tabindex="1" label="Enter URL to test for accessibility..." id="auditUrl">
+            <input is="core-input" required type="url" value="{{auditInputUrl}}">
+          </paper-input-decorator>
+          <!-- Workaround for ajax-form not picking up decorated input -->
+          <input type="text" name="url" value="{{auditInputUrl}}" hidden>
         </div>
         <div class="audit-form" layout horizontal center center-justified>
           <paper-button id="submitAudit" on-click="{{beginFormSubmit}}" raised class="colored">Run Audit</paper-button>
@@ -204,7 +204,7 @@
     </form>
   </section>
 
-<!-- Results/Audit summary view -->
+  <!-- Results/Audit summary view -->
   <section id="audit-results">
 
     <core-scaffold>
@@ -368,7 +368,12 @@
      * Submit the audit form to begin the audit
      */
     beginFormSubmit: function () {
-      this.$.searchForm.submit();
+      var $d = this.$.auditUrl;
+      var $v = $d.querySelector('input').validity.valid;
+      $d.isInvalid = !$v;
+      if (!$d.isInvalid) {
+        this.$.searchForm.submit();
+      }
     },
     /**
      * Clear the auditUrl input field
