@@ -7,6 +7,4 @@ require('./config/express')(app, config);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-// app.listen(config.port);
 app.listen(process.env.PORT || 3000);
