@@ -1,0 +1,9 @@
+h2 Failures
+  ul
+      each fails in failures
+        li= div(class='heading') fails.heading + div(class='elements') fails.elements 
+
+h2 Passes
+  ul
+      each pass in passes
+        li= '<div class="heading">' + pass.heading + '</div>' + '<div class="elements">' + pass.elements + '</div>'
