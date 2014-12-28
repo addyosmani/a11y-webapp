@@ -177,6 +177,8 @@
 
 <core-a11y-keys keys="enter" target="{{$.auditUrl}}" on-keys-pressed="{{beginFormSubmit}}"></core-a11y-keys>
 
+<flatiron-director route="{{route}}" autoHash></flatiron-director>
+
 <core-animated-pages transitions="cross-fade-all" id="pages">
 
   <!-- Default view - Allow the user to enter an input URL -->
@@ -310,7 +312,6 @@
 
     </core-scaffold>
 
-
   </section>
 </core-animated-pages>
 </template>
@@ -362,13 +363,29 @@
       return input.split('\n');
     },
     /**
+     * Called whenever a route change is made
+     */
+    routeChanged: function () {
+      var URL_RE = /\?url=(.+)/;
+      var matches = this.route.match(URL_RE);
+      if (matches) {
+        var url;
+        url = unescape(matches[1]);
+        this.auditInputUrl = url;
+        // HALP: Why is this needed? Without this, the Polymer
+        // values have not propated to the DOM elements, thus
+        // .value of the <input> is undefined.
+        setTimeout(this.beginFormSubmit.bind(this), 0);
+      }
+    },
+    /**
      * Submit the audit form to begin the audit
      */
     beginFormSubmit: function () {
       var $d = this.$.auditUrl;
-      var $v = $d.querySelector('input').validity.valid;
-      $d.isInvalid = !$v;
-      if (!$d.isInvalid) {
+      var valid = $d.querySelector('input').validity.valid;
+      $d.isInvalid = !valid;
+      if (valid) {
         this.$.searchForm.submit();
       }
     },
@@ -432,6 +449,15 @@
       this.resetStorage();
       this.status = 'Running audit...';
       this.togglePage();
+      this.updateRoute();
+    },
+    /**
+     * Update the page route based on the current audit URL
+     */
+    updateRoute: function () {
+      var $d = this.$.auditUrl;
+      var $i = $d.querySelector('input');
+      this.route = "?url=" + escape($i.value);
     },
     /**
      * Toggle the current view being displayed
