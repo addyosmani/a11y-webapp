@@ -387,11 +387,19 @@
      */
     submitted: function (e) {
       this.status = '';
+
       if (e.detail.status > 299) {
         this.status = 'Submission failed';
+        return;
       }
-      var response = e.detail.response;
-      var json = JSON.parse(response);
+
+      var json = JSON.parse(e.detail.response);
+
+      if (json.error) {
+        this.status = json.error;
+        return;
+      }
+
       this.audits = json.audit;
 
       this.audits.forEach(function (el) {
