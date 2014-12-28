@@ -191,7 +191,7 @@
         </div>
         <div flex class="audit-form" layout horizontal center center-justified style="width:70%">
           <paper-input-decorator floatingLabel error="A valid URL is required!" autoValidate tabindex="1" label="Enter URL to test for accessibility..." id="auditUrl">
-            <input is="core-input" required type="url" value="{{auditInputUrl}}">
+            <input is="core-input" type="url" value="{{auditInputUrl}}" required autofocus>
           </paper-input-decorator>
           <!-- Workaround for ajax-form not picking up decorated input -->
           <input type="text" name="url" value="{{auditInputUrl}}" hidden>
