@@ -442,6 +442,13 @@
       this.na = [];
     },
     /**
+     * Reset the audit URL and the associated route
+     */
+    resetUrl: function () {
+      this.auditUrl = '';
+      this.route = '';
+    },
+    /**
      * Switch to results view, set intermediate state when the
      * form has started to submit.
      */
@@ -483,6 +490,7 @@
       this.toggleSpinner();
       this.clearInput();
       this.resetStorage();
+      this.resetUrl();
       this.$.pages.selected = 0;
     },
     /**
