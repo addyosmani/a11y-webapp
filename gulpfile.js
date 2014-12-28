@@ -18,13 +18,13 @@
  * up the optimized app at localhost:3000 / any server that the app
  * gets pushed to.
  *
- * Front-end assets should be placed inside the public directory. 
+ * Front-end assets should be placed inside the public directory.
  *
  * Back-end Setup
  * ====================
  *
- * As mentioned, we're using Express. app/controllers/home.js is 
- * where we directly use the A11y module to perform audits. It's 
+ * As mentioned, we're using Express. app/controllers/home.js is
+ * where we directly use the A11y module to perform audits. It's
  * also where the bulk of routing occurs. We do have Jade templates
  * setup in app/views however these are mostly left behind from an
  * older refactor in case we decide to provide an alternative front-end.
