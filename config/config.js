@@ -11,7 +11,7 @@ var baseApp = {
 };
 
 var config = {
-  development: baseApp
+  development: baseApp,
   test: baseApp,
   production: baseApp
 };
