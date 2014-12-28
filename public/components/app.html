@@ -177,8 +177,6 @@
 
 <core-a11y-keys keys="enter" target="{{$.auditUrl}}" on-keys-pressed="{{beginFormSubmit}}"></core-a11y-keys>
 
-<core-a11y-keys keys="enter" target="{{$.clearAuditInput}}" on-keys-pressed="{{clearInput}}"></core-a11y-keys>
-
 <core-animated-pages transitions="cross-fade-all" id="pages">
 
   <!-- Default view - Allow the user to enter an input URL -->
@@ -198,7 +196,6 @@
         </div>
         <div class="audit-form" layout horizontal center center-justified>
           <paper-button id="submitAudit" on-click="{{beginFormSubmit}}" raised class="colored">Run Audit</paper-button>
-          <paper-button id="clearAuditInput" on-click="{{clearInput}}" raised>Clear</paper-button>
         </div>
       </div>
     </form>
@@ -379,7 +376,8 @@
      * Clear the auditUrl input field
      */
     clearInput: function () {
-      this.$.auditUrl.value = '';
+      var $d = this.$.auditUrl;
+      $d.querySelector('input').value = '';
     },
     /**
      * Parse the Audit API responses into the relevant
