@@ -1,6 +1,7 @@
 var express = require('express');
 var a11y = require('a11y');
 var validator = require('valid-url');
+var prependHttp = require('prepend-http');
 var router = express.Router();
 var Article = require('../models/article');
 var Result = require('../models/result');
@@ -23,16 +24,17 @@ router.get('/help', function (req, res, next) {
 });
 
 router.post('/api', function (req, res) {
-  var url = req.body.url;
+  var url = prependHttp(req.body.url);
   if (validator.isUri(url)) {
-    var response = "";
     a11y(url, function (err, reports) {
       if (err) {
-        response = 'There was an error: ' + err;
+        res.send({
+          error: 'There was an error: ' + err
+        });
         return;
       }
-      response = reports;
-      res.json(response);
+
+      res.json(reports);
     });
   } else {
     res.send({
