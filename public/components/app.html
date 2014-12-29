@@ -368,14 +368,20 @@
     routeChanged: function () {
       var URL_RE = /\?url=(.+)/;
       var matches = this.route.match(URL_RE);
+
       if (matches) {
         var url;
         url = unescape(matches[1]);
         this.auditInputUrl = url;
-        // HALP: Why is this needed? Without this, the Polymer
-        // values have not propated to the DOM elements, thus
-        // .value of the <input> is undefined.
-        setTimeout(this.beginFormSubmit.bind(this), 0);
+        // We need to schedule this operation so the state held by
+        // the component/Polymer has time to settle and is readable from the
+        // DOM.
+        this.async(this.beginFormSubmit.bind(this));
+      } else {
+        // No match means we either have no/an invalid sub-route or the user
+        // pushed the back button.
+        var p = this.$.pages;
+        p.selected = 0;
       }
     },
     /**
