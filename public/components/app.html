@@ -177,6 +177,8 @@
 
 <core-a11y-keys keys="enter" target="{{$.auditUrl}}" on-keys-pressed="{{beginFormSubmit}}"></core-a11y-keys>
 
+<flatiron-director route="{{route}}" autoHash></flatiron-director>
+
 <core-animated-pages transitions="cross-fade-all" id="pages">
 
   <!-- Default view - Allow the user to enter an input URL -->
@@ -310,7 +312,6 @@
 
     </core-scaffold>
 
-
   </section>
 </core-animated-pages>
 </template>
@@ -362,13 +363,35 @@
       return input.split('\n');
     },
     /**
+     * Called whenever a route change is made
+     */
+    routeChanged: function () {
+      var URL_RE = /\?url=(.+)/;
+      var matches = this.route.match(URL_RE);
+
+      if (matches) {
+        var url;
+        url = unescape(matches[1]);
+        this.auditInputUrl = url;
+        // We need to schedule this operation so the state held by
+        // the component/Polymer has time to settle and is readable from the
+        // DOM.
+        this.async(this.beginFormSubmit.bind(this));
+      } else {
+        // No match means we either have no/an invalid sub-route or the user
+        // pushed the back button.
+        var p = this.$.pages;
+        p.selected = 0;
+      }
+    },
+    /**
      * Submit the audit form to begin the audit
      */
     beginFormSubmit: function () {
       var $d = this.$.auditUrl;
-      var $v = $d.querySelector('input').validity.valid;
-      $d.isInvalid = !$v;
-      if (!$d.isInvalid) {
+      var valid = $d.querySelector('input').validity.valid;
+      $d.isInvalid = !valid;
+      if (valid) {
         this.$.searchForm.submit();
       }
     },
@@ -425,6 +448,13 @@
       this.na = [];
     },
     /**
+     * Reset the audit URL and the associated route
+     */
+    resetUrl: function () {
+      this.auditUrl = '';
+      this.route = '';
+    },
+    /**
      * Switch to results view, set intermediate state when the
      * form has started to submit.
      */
@@ -432,6 +462,15 @@
       this.resetStorage();
       this.status = 'Running audit...';
       this.togglePage();
+      this.updateRoute();
+    },
+    /**
+     * Update the page route based on the current audit URL
+     */
+    updateRoute: function () {
+      var $d = this.$.auditUrl;
+      var $i = $d.querySelector('input');
+      this.route = "?url=" + escape($i.value);
     },
     /**
      * Toggle the current view being displayed
@@ -457,6 +496,7 @@
       this.toggleSpinner();
       this.clearInput();
       this.resetStorage();
+      this.resetUrl();
       this.$.pages.selected = 0;
     },
     /**

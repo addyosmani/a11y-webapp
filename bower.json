@@ -15,6 +15,7 @@
     "core-pages": "Polymer/core-pages#~0.5.2",
     "core-menu": "Polymer/core-menu#~0.5.2",
     "core-item": "Polymer/core-item#~0.5.2",
-    "webcomponents.js": "~0.5.2"
+    "webcomponents.js": "~0.5.2",
+    "flatiron-director": "PolymerLabs/flatiron-director#~0.5.0"
   }
 }
